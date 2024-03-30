@@ -18,7 +18,7 @@ db.connect(error => {
     if (error) {
       return console.error('Error connecting to the database: ', error);
     }
-    console.log('Connected to the MySQL database.');
+    console.log('Connected to the MySQL database ABC College.');
   });
   
   module.exports = db;
