@@ -1,13 +1,8 @@
 import express from "express";
-import dotenv from "dotenv";
 import cros from "cors";
-//import db from "./config/db"
-
-// const express = require("express");
-//const dotenv = require("dotenv");
-//const cros = require("cors");
-//const mysql = require("mysql");
-//const dbConnection = require("./config/db");
+import mysql from "mysql";
+import dotenv from "dotenv";
+import dbConnection from "./config/db.js";
 
 const app = express();
 app.use(cros());
@@ -16,6 +11,17 @@ app.use(express.json());
 const PORT = process.env.PORT || 8080; //define a port for the server
 
 //Data Base connection
+app.get("/reg-key", (req, res) => {
+  const sql = "SELECT * FROM regkey";
+  dbConnection.query(sql, (err, result) => {
+    if (err) {
+      return res.json({ Message: "Error inside server" });
+    } else {
+      return res.json(result);
+    }
+  });
+  //return res.json("From Backend Side Nemal");
+});
 app.get("/", (req, res) => {
   return res.json("From Backend Side Nemal");
 });
