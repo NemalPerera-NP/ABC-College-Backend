@@ -1,16 +1,21 @@
-const userLogin = async (req, res) => {
-    try {
-      const { username, password } = req.body;
-      const user = await veriFyUser(username, password);
-      return res.status(200).json({
-        message: "Login Sucessful",
-        user,
-      });
-    } catch (error) {
-      return res.status(401).json({
-        message: error.message,
-      });
-    }
-  };
-  
-  export{userLogin}
+const userModel = require("../models/userModel");
+
+const authonticateUser = async (username) => {
+  const user = await userModel.findByUsername(username);
+  if (!user) {
+    console.log("user<<<", user);
+    // return {
+    //   sucsess: false,
+    //   message: "user not Found",
+    // };
+    throw new Error("User Not Found");
+  }
+  // return {
+  //   sucsess: true,
+  //   user,
+  // };
+  console.log("user>>>>>>>", user);
+  return user;
+};
+
+module.exports = { authonticateUser };
