@@ -1,8 +1,13 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const cros = require("cors");
-const mysql = require("mysql");
-const dbConnection = require("./config/db");
+import express from "express";
+import dotenv from "dotenv";
+import cros from "cors";
+//import db from "./config/db"
+
+// const express = require("express");
+//const dotenv = require("dotenv");
+//const cros = require("cors");
+//const mysql = require("mysql");
+//const dbConnection = require("./config/db");
 
 const app = express();
 app.use(cros());
