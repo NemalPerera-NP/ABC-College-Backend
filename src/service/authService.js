@@ -1,4 +1,4 @@
-const userModel = require("../models/userModel");
+const validationSchema =require('../helper/validationSchema')
 const { hashPassword } = require("../helper/hashPassword");
 const dbConnection = require("../config/db");
 
@@ -18,7 +18,7 @@ const registerUser = async ({
       throw error;
       //working corectly
     }
-    const usernameExsist = await userModel.findByUsername(Username);
+    const usernameExsist = await validationSchema.findByUsername(Username);
     if (usernameExsist) {
       // throw new Error("Username Already Exists");
       //working corectly
@@ -27,7 +27,7 @@ const registerUser = async ({
       throw error;
     }
 
-    const emailExsist = await userModel.findByEmail(Email);
+    const emailExsist = await validationSchema.findByEmail(Email);
     if (emailExsist) {
       //throw new Error("User Already Registered with This Email");
       //working corectly
@@ -35,7 +35,7 @@ const registerUser = async ({
       error.statusCode = 409; // Conflict
       throw error;
     }
-    const nicExsist = await userModel.findByNIC(Nic);
+    const nicExsist = await validationSchema.findByNIC(Nic);
     if (nicExsist) {
       //throw new Error("User Already Registered with This NIC");
       //working corectly
@@ -43,7 +43,7 @@ const registerUser = async ({
       error.statusCode = 409; // Conflict
       throw error;
     }
-    const empIdExsist = await userModel.findByEmpId(EmpId);
+    const empIdExsist = await validationSchema.findByEmpId(EmpId);
     if (empIdExsist) {
       console.log("empIdExsist", empIdExsist);
       // throw new Error("User Already Registered with This Employee ID");
@@ -81,7 +81,7 @@ const registerUser = async ({
   }
 };
 
-const authonticateUser = async (username) => {
+const loginUserService = async ({username, password}) => {
   const user = await userModel.findByUsername(username);
   if (!user) {
     console.log("user<<<", user);
@@ -99,4 +99,4 @@ const authonticateUser = async (username) => {
   return user;
 };
 
-module.exports = { authonticateUser, registerUser };
+module.exports = { loginUserService, registerUser };
