@@ -1,6 +1,8 @@
-const validationSchema =require('../helper/validationSchema')
-const { hashPassword } = require("../helper/hashPassword");
+const validationSchema = require("../helper/validationSchema");
+const { hashPassword, comparePassword } = require("../helper/hashPassword");
 const dbConnection = require("../config/db");
+const JWT = require("jsonwebtoken");
+const dotenv = require("dotenv");
 
 const registerUser = async ({
   Name,
@@ -60,43 +62,67 @@ const registerUser = async ({
     const sql =
       "INSERT INTO `user`(`Name`, `Nic`, `Username`, `Email`, `EmpId`, `password`) VALUES (?,?,?,?,?,?)";
 
-    const [result] = await dbConnection.query(
-      sql,
-      [Name, Nic, Username, Email, EmpId, hashPass]
-  );
-  console.log("result", result);
+    const [result] = await dbConnection.query(sql, [
+      Name,
+      Nic,
+      Username,
+      Email,
+      EmpId,
+      hashPass,
+    ]);
+    console.log("result", result);
 
-   // Proceed with your logic after the successful execution
+    // Proceed with your logic after the successful execution
     // For example, checking result or result.affectedRows depending on your operation
     if (result.affectedRows > 0) {
       console.log("result.....inside if", result);
 
       return { success: true, result };
-  } else {
+    } else {
       // Handle the case where the query doesn't affect any rows as needed
-      return { success: false, message: "User not saved successfully", statusCode: 500 };  }
+      return {
+        success: false,
+        message: "User not saved successfully",
+        statusCode: 500,
+      };
+    }
+  } catch (error) {}
+};
+
+//User Login validation
+//check the status codes later
+const loginUserService = async ({ username, password }) => {
+  try {
+    const loginUser = await validationSchema.findByUsername(username);
+    if (!loginUser) {
+      //working corectly
+      const error = new Error("Username Doesn't exists");
+
+      error.statusCode = 409; // Conflict
+      throw error;
+    }
+    console.log("usernameExsist....", loginUser.password);
+    const isPasswordMatch = await comparePassword(password, loginUser.password);
+    if (!isPasswordMatch) {
+      //working corectly
+      const error = new Error("Invalid Password");
+      console.log("isPasswordMatch....", isPasswordMatch);
+
+      error.statusCode = 409; // Conflict
+      throw error;
+    }
+    // const token = "nemalllllll";
+
+    const token = JWT.sign({ Nic: loginUser.Nic }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    console.log("isPasswordMatch....", token);
+
+    return { success: true, loginUser, token };
   } catch (error) {
     if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
     throw error;
   }
-};
-
-const loginUserService = async ({username, password}) => {
-  const user = await userModel.findByUsername(username);
-  if (!user) {
-    console.log("user<<<", user);
-    // return {
-    //   sucsess: false,
-    //   message: "user not Found",
-    // };
-    throw new Error("User Not Found");
-  }
-  // return {
-  //   sucsess: true,
-  //   user,
-  // };
-  console.log("user>>>>>>>", user);
-  return user;
 };
 
 module.exports = { loginUserService, registerUser };

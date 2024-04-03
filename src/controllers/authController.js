@@ -1,5 +1,6 @@
 const { loginUserService, registerUser } = require("../service/authService");
 
+
 const userRegisterController = async (req, res) => {
   try {
     const signUpUser = await registerUser(req.body);
@@ -26,17 +27,18 @@ const loginUserControle = async (req, res) => {
     console.log("req.body...", req.body);
     const loginUser = await loginUserService(req.body);
 
-    if (signUpUser.success) {
+    if (loginUser.success) {
       return res.status(200).json({
         success: true,
         message: "Login successful.",
-        data: signUpUser.result,
+        data: loginUser.loginUser,
+        token: loginUser.token,
       });
     } else {
       // signUpUser.success is false, handle according to signUpUser.statusCode
       return res
-        .status(signUpUser.statusCode || 400)
-        .json({ message: signUpUser.message });
+        .status(loginUser.statusCode || 400)
+        .json({ message: loginUser.message });
     }
   } catch (error) {
     console.error("Registration controller error:", error);
