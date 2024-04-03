@@ -1,4 +1,4 @@
-const validationSchema = require("../helper/validationSchema");
+const UserModel = require("../models/userModel");
 const { hashPassword, comparePassword } = require("../helper/hashPassword");
 const dbConnection = require("../config/db");
 const JWT = require("jsonwebtoken");
@@ -21,7 +21,7 @@ const registerUser = async ({
       throw error;
       //working corectly
     }
-    const usernameExsist = await validationSchema.findByUsername(Username);
+    const usernameExsist = await UserModel.findByUsername(Username);
     if (usernameExsist) {
       // throw new Error("Username Already Exists");
       //working corectly
@@ -30,7 +30,7 @@ const registerUser = async ({
       throw error;
     }
 
-    const emailExsist = await validationSchema.findByEmail(Email);
+    const emailExsist = await UserModel.findByEmail(Email);
     if (emailExsist) {
       //throw new Error("User Already Registered with This Email");
       //working corectly
@@ -38,7 +38,7 @@ const registerUser = async ({
       error.statusCode = 409; // Conflict
       throw error;
     }
-    const nicExsist = await validationSchema.findByNIC(Nic);
+    const nicExsist = await UserModel.findByNIC(Nic);
     if (nicExsist) {
       //throw new Error("User Already Registered with This NIC");
       //working corectly
@@ -46,7 +46,7 @@ const registerUser = async ({
       error.statusCode = 409; // Conflict
       throw error;
     }
-    const empIdExsist = await validationSchema.findByEmpId(EmpId);
+    const empIdExsist = await UserModel.findByEmpId(EmpId);
     if (empIdExsist) {
       console.log("empIdExsist", empIdExsist);
       // throw new Error("User Already Registered with This Employee ID");
@@ -60,17 +60,14 @@ const registerUser = async ({
     const hashPass = await hashPassword(password);
     console.log("pass........", hashPass, password);
 
-    const sql =
-      "INSERT INTO `users`(`name`, `nic`, `username`, `email`, `employee_id`, `password`) VALUES (?,?,?,?,?,?)";
-
-    const [result] = await dbConnection.query(sql, [
+    const result = await UserModel.create({
       Name,
       Nic,
       Username,
       Email,
       EmpId,
-      hashPass,
-    ]);
+      password: hashPass,
+    });
     console.log("result", result);
 
     // Proceed with your logic after the successful execution
@@ -97,7 +94,7 @@ const registerUser = async ({
 //check the status codes later
 const loginUserService = async ({ username, password }) => {
   try {
-    const loginUser = await validationSchema.findByUsername(username);
+    const loginUser = await UserModel.findByUsername(username);
     if (!loginUser) {
       //working corectly
       const error = new Error("Username Doesn't exists");
