@@ -82,4 +82,18 @@ UserModel.create = async ({ Name, Nic, Username, Email, EmpId, password }) => {
   }
 };
 
+UserModel.getRegKey = async () => {
+  try {
+    console.log("called function getRegKey.....");
+    const [rows] = await db.query("SELECT * FROM `registration_key` WHERE 1");
+    if (rows.length > 0) {
+      console.log("user models....rows...", rows);
+      return rows[0];
+    }
+    return null;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = UserModel;

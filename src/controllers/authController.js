@@ -1,5 +1,8 @@
-const { loginUserService, registerUser } = require("../service/authService");
-
+const {
+  loginUserService,
+  registerUser,
+  regKeyValidation,
+} = require("../service/authService");
 
 const userRegisterController = async (req, res) => {
   try {
@@ -22,6 +25,8 @@ const userRegisterController = async (req, res) => {
     res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
+
+//controller for user login and validation
 const loginUserControle = async (req, res) => {
   try {
     console.log("req.body...", req.body);
@@ -45,4 +50,32 @@ const loginUserControle = async (req, res) => {
     res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
-module.exports = { loginUserControle, userRegisterController };
+
+//controller for registration key management
+const userRegistrationKeyCreationControle = async (req, res) => {
+  try {
+    console.log("req.body...", req.body);
+    const RegKey = await regKeyValidation(req.body);
+
+    if (RegKey.success) {
+      return res.status(200).json({
+        success: true,
+        message: "Registration Key Matched Sucessfully",
+        data: RegKey.isRegKeyMatch,
+      });
+    } else {
+      // signUpUser.success is false, handle according to signUpUser.statusCode
+      return res
+        .status(loginUser.statusCode || 400)
+        .json({ message: loginUser.message });
+    }
+  } catch (error) {
+    console.error("Registration controller error:", error);
+    res.status(error.statusCode || 500).json({ message: error.message });
+  }
+};
+module.exports = {
+  loginUserControle,
+  userRegisterController,
+  userRegistrationKeyCreationControle,
+};

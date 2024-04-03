@@ -126,4 +126,27 @@ const loginUserService = async ({ username, password }) => {
   }
 };
 
-module.exports = { loginUserService, registerUser };
+const regKeyValidation = async ({ regkey }) => {
+  try {
+    const RegistrationKey = await UserModel.getRegKey();
+    console.log("RegistrationKey......",regkey,RegistrationKey)
+    const isRegKeyMatch = await comparePassword(
+      regkey,
+      RegistrationKey.key_hash
+    );
+    if (!isRegKeyMatch) {
+      //working corectly
+      const error = new Error("Invalid Registration Key");
+      console.log("isPasswordMatch....", isRegKeyMatch);
+
+      error.statusCode = 409; // Conflict
+      throw error;
+    }
+
+    return { success: true, isRegKeyMatch };
+  } catch (error) {
+    if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
+    throw error;
+  }
+};
+module.exports = { loginUserService, registerUser,regKeyValidation };
