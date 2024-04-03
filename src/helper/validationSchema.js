@@ -5,7 +5,7 @@ const validationSchema = {};
 validationSchema.findByUsername = async (userName) => {
   try {
     console.log("called function findByUsername.....");
-    const [rows] = await db.query("SELECT * FROM user WHERE Username= ?", [
+    const [rows] = await db.query("SELECT * FROM users WHERE username= ?", [
       userName,
     ]);
     if (rows.length > 0) {
@@ -21,7 +21,7 @@ validationSchema.findByUsername = async (userName) => {
 validationSchema.findByEmail = async (email) => {
   try {
     console.log("called function findByEmail.....");
-    const [rows] = await db.query("SELECT * FROM user WHERE Email= ?", [email]);
+    const [rows] = await db.query("SELECT * FROM users WHERE Email= ?", [email]);
     if (rows.length > 0) {
       console.log("user models....rows...", rows);
       return rows[0];
@@ -35,7 +35,7 @@ validationSchema.findByEmail = async (email) => {
 validationSchema.findByNIC = async (nic) => {
   try {
     console.log("called function findByNIC.....");
-    const [rows] = await db.query("SELECT * FROM user WHERE Nic= ?", [nic]);
+    const [rows] = await db.query("SELECT * FROM users WHERE Nic= ?", [nic]);
     if (rows.length > 0) {
       console.log("user models....rows...", rows);
       return rows[0];
@@ -49,7 +49,7 @@ validationSchema.findByNIC = async (nic) => {
 validationSchema.findByEmpId = async (empId) => {
   try {
     console.log("called function findByEmpId.....");
-    const [rows] = await db.query("SELECT * FROM user WHERE EmpId= ?", [empId]);
+    const [rows] = await db.query("SELECT * FROM users WHERE employee_id= ?", [empId]);
     if (rows.length > 0) {
       console.log("user models....rows...", rows);
       return rows[0];

@@ -14,6 +14,7 @@ const registerUser = async ({
 }) => {
   try {
     console.log(".....", Name, Nic, Username, Email, EmpId, password);
+
     if (!Name || !Nic || !Email || !Username || !EmpId || !password) {
       const error = new Error("All the fields must be filled");
       error.statusCode = 400; // Bad Request
@@ -60,7 +61,7 @@ const registerUser = async ({
     console.log("pass........", hashPass, password);
 
     const sql =
-      "INSERT INTO `user`(`Name`, `Nic`, `Username`, `Email`, `EmpId`, `password`) VALUES (?,?,?,?,?,?)";
+      "INSERT INTO `users`(`name`, `nic`, `username`, `email`, `employee_id`, `password`) VALUES (?,?,?,?,?,?)";
 
     const [result] = await dbConnection.query(sql, [
       Name,
@@ -86,7 +87,10 @@ const registerUser = async ({
         statusCode: 500,
       };
     }
-  } catch (error) {}
+  } catch (error) {
+    if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
+    throw error;
+  }
 };
 
 //User Login validation
