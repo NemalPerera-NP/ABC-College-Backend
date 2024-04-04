@@ -86,6 +86,8 @@ const getStudentById = async (id) => {
 
 const updateStudent = async (id, studentData) => {
   try {
+    console.log("body...../////////", id, studentData);
+
     const students = await StudentModel.updateStudentData(id, studentData);
     return { success: true, students };
   } catch (error) {

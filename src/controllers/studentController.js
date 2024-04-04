@@ -68,6 +68,7 @@ const getStudentByIdController = async (req, res) => {
 
 const updateStudentController = async (req, res) => {
   try {
+    console.log("body.....",req.body)
     const student = await updateStudent(req.params.id, req.body);
     res.json({ message: "Student updated successfully", student });
   } catch (error) {
