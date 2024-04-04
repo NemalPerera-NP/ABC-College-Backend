@@ -5,7 +5,10 @@ const {
   userRegistrationKeyCreationControle,
 } = require("../controllers/authController");
 
-const { studentCreateController } = require("../controllers/studentController");
+const {
+  studentCreateController,
+  getallStudentController,
+} = require("../controllers/studentController");
 
 const router = express.Router();
 
@@ -14,6 +17,6 @@ const router = express.Router();
 router.post("/login", loginUserControle);
 router.post("/signup", userRegisterController);
 router.post("/reg-key", userRegistrationKeyCreationControle);
-router.post("/student",studentCreateController);
-
+router.post("/student", studentCreateController);
+router.get("/get-setudents", getallStudentController);
 module.exports = router;

@@ -1,4 +1,4 @@
-const { createNewStudent } = require("../service/studentService");
+const { createNewStudent,getStudents } = require("../service/studentService");
 
 const studentCreateController = async (req, res) => {
   try {
@@ -24,4 +24,26 @@ const studentCreateController = async (req, res) => {
   }
 };
 
-module.exports = { studentCreateController };
+const getallStudentController = async (req, res) => {
+  try {
+    console.log("req.body...", req.body);
+    const allStudents = await getStudents();
+
+    if (allStudents.success) {
+      return res.status(200).json({
+        success: true,
+        message: "fetch successful.",
+        data: allStudents,
+      });
+    } else {
+      // signUpUser.success is false, handle according to signUpUser.statusCode
+      return res
+        .status(loginUser.statusCode || 400)
+        .json({ message: loginUser.message });
+    }
+  } catch (error) {
+    console.error("New Student Creation controller error:", error);
+    res.status(error.statusCode || 500).json({ message: error.message });
+  }
+};
+module.exports = { studentCreateController, getallStudentController };
