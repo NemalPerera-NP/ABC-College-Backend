@@ -5,6 +5,8 @@ const {
   userRegistrationKeyCreationControle,
 } = require("../controllers/authController");
 
+const { studentCreateController } = require("../controllers/studentController");
+
 const router = express.Router();
 
 //router.post("login", userLogin);
@@ -12,6 +14,6 @@ const router = express.Router();
 router.post("/login", loginUserControle);
 router.post("/signup", userRegisterController);
 router.post("/reg-key", userRegistrationKeyCreationControle);
-router.post("/student")
+router.post("/student",studentCreateController);
 
 module.exports = router;
