@@ -52,4 +52,26 @@ StudentModel.addStudent = async (studentData) => {
     throw error;
   }
 };
+
+//fwtch data for a particular item from the students table
+StudentModel.findByElement = async (colName, element) => {
+  const validColumns = ["nic", "student_id", "email", "contact_number"];
+  if (!validColumns.includes(colName)) {
+    throw new Error(`Invalid column name: ${colName}`);
+  }
+  try {
+    console.log("called function findByElement.....", colName, element);
+    const [rows] = await db.query(
+      `SELECT * FROM students WHERE ${colName} = ?`,
+      [element]
+    );
+    if (rows.length > 0) {
+      console.log("user models....rows...", rows);
+      return rows[0];
+    }
+    return null;
+  } catch (error) {
+    throw error;
+  }
+};
 module.exports = StudentModel;
