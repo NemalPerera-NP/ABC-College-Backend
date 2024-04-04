@@ -19,7 +19,7 @@ StudentModel.getAllStudents = async () => {
 };
 
 //fetching data about a specific student
-StudentModel.findStudentByIndex = async () => {
+StudentModel.findStudentByIndex = async (id) => {
   try {
     console.log("called function findStudentByIndex.....");
     const sql = `SELECT * FROM students WHERE id = ?`;
@@ -35,10 +35,36 @@ StudentModel.findStudentByIndex = async () => {
 };
 
 //delete a specific student data in the students table
-StudentModel.deleteStudentData = async ({ id }) => {
+StudentModel.deleteStudentData = async (id) => {
   try {
     const sql = `DELETE FROM students WHERE id = ?`;
-    return db.query(sql, [id]);
+    const [result] = await db.query(sql, [id]);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+StudentModel.updateStudentData = async ({ id, studentData }) => {
+  try {
+    // const fieldsToUpdate = Object.entries(studentData).map(([key, value]) => `${key} = ?`).join(', ');
+    // const sql = `UPDATE students SET ${fieldsToUpdate} WHERE id = ?`;
+    // await db.query(sql, [...Object.values(studentData), id]);
+    // return this.findStudentById(id);  // Return the updated student
+
+    if (
+      !studentData ||
+      typeof studentData !== "object" ||
+      !Object.keys(studentData).length
+    ) {
+      throw new Error("Invalid or empty student data provided");
+    }
+    const fieldsToUpdate = Object.entries(studentData)
+      .map(([key, value]) => `${key} = ?`)
+      .join(", ");
+    const sql = `UPDATE students SET ${fieldsToUpdate} WHERE id = ?`;
+    await db.query(sql, [...Object.values(studentData), id]);
+    return this.findStudentById(id);
   } catch (error) {
     throw error;
   }

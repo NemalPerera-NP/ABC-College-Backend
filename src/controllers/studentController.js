@@ -1,4 +1,10 @@
-const { createNewStudent, getStudents } = require("../service/studentService");
+const {
+  createNewStudent,
+  getStudents,
+  getStudentById,
+  updateStudent,
+  deleteStudent,
+} = require("../service/studentService");
 
 const studentCreateController = async (req, res) => {
   try {
@@ -49,7 +55,7 @@ const getallStudentController = async (req, res) => {
 
 const getStudentByIdController = async (req, res) => {
   try {
-    const student = await studentService.getStudentById(req.params.id);
+    const student = await getStudentById(req.params.id);
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }
@@ -62,7 +68,7 @@ const getStudentByIdController = async (req, res) => {
 
 const updateStudentController = async (req, res) => {
   try {
-    const student = await studentService.updateStudent(req.params.id, req.body);
+    const student = await updateStudent(req.params.id, req.body);
     res.json({ message: "Student updated successfully", student });
   } catch (error) {
     console.error("New Student Creation controller error:", error);
@@ -72,8 +78,12 @@ const updateStudentController = async (req, res) => {
 
 const deleteStudentController = async (req, res) => {
   try {
-    await studentService.deleteStudent(req.params.id);
-      res.json({ message: 'Student deleted successfully' });
+    console.log("req.params.id", req.params.id);
+    const response = await deleteStudent(req.params.id);
+    if (!response.success) {
+      return res.status(404).json({ message: response.message });
+    }
+    res.json({ message: response.message });
   } catch (error) {
     console.error("New Student Creation controller error:", error);
     res.status(error.statusCode || 500).json({ message: error.message });

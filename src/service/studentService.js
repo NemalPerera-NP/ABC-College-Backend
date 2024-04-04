@@ -66,11 +66,54 @@ const createNewStudent = async (studentData) => {
 
 const getStudents = async () => {
   try {
-    const students = await StudentModel.getAllStudents()
+    const students = await StudentModel.getAllStudents();
     return { success: true, students };
   } catch (error) {
     if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
     throw error;
   }
 };
-module.exports = { createNewStudent,getStudents };
+
+const getStudentById = async (id) => {
+  try {
+    const students = await StudentModel.findStudentByIndex(id);
+    return { success: true, students };
+  } catch (error) {
+    if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
+    throw error;
+  }
+};
+
+const updateStudent = async (id, studentData) => {
+  try {
+    const students = await StudentModel.updateStudentData(id, studentData);
+    return { success: true, students };
+  } catch (error) {
+    if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
+    throw error;
+  }
+};
+
+const deleteStudent = async (id) => {
+  try {
+    const students = await StudentModel.deleteStudentData(id);
+    if (students.affectedRows === 0) {
+      return {
+        success: false,
+        message: "No student found with the provided ID",
+      };
+    }
+    return { success: true, message: "Student deleted successfully" };
+  } catch (error) {
+    if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
+    throw error;
+  }
+};
+
+module.exports = {
+  createNewStudent,
+  getStudents,
+  getStudentById,
+  updateStudent,
+  deleteStudent,
+};
