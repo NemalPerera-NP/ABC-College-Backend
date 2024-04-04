@@ -13,7 +13,6 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 8080; //define a port for the server
 
-
 //Data Base connection
 // app.get("/reg-key", (req, res) => {
 //   const sql = "SELECT * FROM regkey";
@@ -32,6 +31,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", router);
+app.use("/api/register", router);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);

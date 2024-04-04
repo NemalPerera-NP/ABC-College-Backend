@@ -12,5 +12,6 @@ const router = express.Router();
 router.post("/login", loginUserControle);
 router.post("/signup", userRegisterController);
 router.post("/reg-key", userRegistrationKeyCreationControle);
+router.post("/student")
 
 module.exports = router;
