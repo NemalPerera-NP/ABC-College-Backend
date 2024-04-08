@@ -66,7 +66,6 @@ const registerUser = async ({
     });
     console.log("result", result);
 
-  
     if (result.affectedRows > 0) {
       console.log("result.....inside if", result);
 
@@ -79,7 +78,7 @@ const registerUser = async ({
       };
     }
   } catch (error) {
-    if (!error.statusCode) error.statusCode = 500; 
+    if (!error.statusCode) error.statusCode = 500;
     throw error;
   }
 };
@@ -104,7 +103,7 @@ const loginUserService = async ({ username, password }) => {
       error.statusCode = 401; // Conflict
       throw error;
     }
-    
+
     const token = JWT.sign({ Nic: loginUser.Nic }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
@@ -112,7 +111,7 @@ const loginUserService = async ({ username, password }) => {
 
     return { success: true, loginUser, token };
   } catch (error) {
-    if (!error.statusCode) error.statusCode = 500; 
+    if (!error.statusCode) error.statusCode = 500;
     throw error;
   }
 };
@@ -120,7 +119,7 @@ const loginUserService = async ({ username, password }) => {
 const regKeyValidation = async ({ regkey }) => {
   try {
     const RegistrationKey = await UserModel.getRegKey();
-    console.log("RegistrationKey......",regkey,RegistrationKey)
+    console.log("RegistrationKey......", regkey, RegistrationKey);
     const isRegKeyMatch = await comparePassword(
       regkey,
       RegistrationKey.key_hash
@@ -135,8 +134,56 @@ const regKeyValidation = async ({ regkey }) => {
 
     return { success: true, isRegKeyMatch };
   } catch (error) {
-    if (!error.statusCode) error.statusCode = 500; 
+    if (!error.statusCode) error.statusCode = 500;
     throw error;
   }
 };
-module.exports = { loginUserService, registerUser,regKeyValidation };
+
+const regKeyupdate = async ({ oldkey, newkey }) => {
+  try {
+    const RegistrationKey = await UserModel.getRegKey();
+    console.log("RegistrationKey......", RegistrationKey);
+
+    const isRegKeyMatch = await comparePassword(
+      oldkey,
+      RegistrationKey.key_hash
+    );
+
+    if (isRegKeyMatch) {
+      console.log("Regkey matched....");
+
+      const newKeyHash = await hashPassword(newkey);
+      // console.log("Regkey matched.hashPassword...", newKeyHash);
+
+      const result = await UserModel.upsertKey(newKeyHash);
+      // console.log("result....", result[0].affectedRows);
+
+      if (result[0].affectedRows > 0) {
+        return {
+          success: true,
+          message: "Registration key updated successfully",
+        };
+      } else {
+        return {
+          success: false,
+          message: "Failed to update the registration key",
+        };
+      }
+    } else {
+      const error = new Error("Invalid Registration Key");
+      console.log("isPasswordMatch....", isRegKeyMatch);
+
+      error.statusCode = 401; // Conflict
+      throw error;
+    }
+  } catch (error) {
+    if (!error.statusCode) error.statusCode = 500;
+    throw error;
+  }
+};
+module.exports = {
+  loginUserService,
+  registerUser,
+  regKeyValidation,
+  regKeyupdate,
+};

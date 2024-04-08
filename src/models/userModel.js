@@ -96,4 +96,30 @@ UserModel.getRegKey = async () => {
   }
 };
 
+UserModel.upsertKey = async (newKeyHash) => {
+  try {
+    // Check if there's already a row in the table
+    const checkSql = `SELECT id FROM registration_key LIMIT 1;`;
+    const [rows] = await db.query(checkSql);
+    console.log("rows...", rows);
+
+    if (rows.length > 0) {
+      console.log("row exsits....");
+
+      // row exists, update it
+      const updateSql = `UPDATE registration_key SET key_hash = ?, updated_at = NOW() WHERE id = ?;`;
+      const result = await db.query(updateSql, [newKeyHash, rows[0].id]);
+      console.log("row exsits...result...", result);
+
+      return result;
+    } else {
+      // If no row exists, insert a new one
+      const insertSql = `INSERT INTO registration_key (key_hash) VALUES (?);`;
+      const result = await db.query(insertSql, [newKeyHash]);
+      return result;
+    }
+  } catch (error) {
+    throw new Error(`Error upserting registration key: ${error.message}`);
+  }
+};
 module.exports = UserModel;

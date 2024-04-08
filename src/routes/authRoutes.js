@@ -3,6 +3,7 @@ const {
   loginUserControle,
   userRegisterController,
   userRegistrationKeyCreationControle,
+  regKeyupdateController,
 } = require("../controllers/authController");
 
 const {
@@ -27,4 +28,5 @@ router.delete(
   authenticateToken,
   deleteStudentController
 );
+router.post("/update/reg-key", authenticateToken, regKeyupdateController);
 module.exports = router;
