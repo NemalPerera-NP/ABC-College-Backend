@@ -23,7 +23,6 @@ const registerUser = async ({
     }
     const usernameExsist = await UserModel.findByUsername(Username);
     if (usernameExsist) {
-      // throw new Error("Username Already Exists");
       //working corectly
       const error = new Error("Username already exists");
       error.statusCode = 409; // Conflict
@@ -32,7 +31,6 @@ const registerUser = async ({
 
     const emailExsist = await UserModel.findByEmail(Email);
     if (emailExsist) {
-      //throw new Error("User Already Registered with This Email");
       //working corectly
       const error = new Error("User Already Registered with This Email");
       error.statusCode = 409; // Conflict
@@ -40,7 +38,6 @@ const registerUser = async ({
     }
     const nicExsist = await UserModel.findByNIC(Nic);
     if (nicExsist) {
-      //throw new Error("User Already Registered with This NIC");
       //working corectly
       const error = new Error("User Already Registered with This NIC");
       error.statusCode = 409; // Conflict
@@ -49,7 +46,6 @@ const registerUser = async ({
     const empIdExsist = await UserModel.findByEmpId(EmpId);
     if (empIdExsist) {
       console.log("empIdExsist", empIdExsist);
-      // throw new Error("User Already Registered with This Employee ID");
       //working corectly
       const error = new Error("User Already Registered with This Employee ID");
       error.statusCode = 409; // Conflict
@@ -70,14 +66,12 @@ const registerUser = async ({
     });
     console.log("result", result);
 
-    // Proceed with your logic after the successful execution
-    // For example, checking result or result.affectedRows depending on your operation
+  
     if (result.affectedRows > 0) {
       console.log("result.....inside if", result);
 
       return { success: true, result };
     } else {
-      // Handle the case where the query doesn't affect any rows as needed
       return {
         success: false,
         message: "User not saved successfully",
@@ -85,21 +79,19 @@ const registerUser = async ({
       };
     }
   } catch (error) {
-    if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
+    if (!error.statusCode) error.statusCode = 500; 
     throw error;
   }
 };
 
 //User Login validation
-//check the status codes later
 const loginUserService = async ({ username, password }) => {
   try {
     const loginUser = await UserModel.findByUsername(username);
     if (!loginUser) {
-      //working corectly
       const error = new Error("Username Doesn't exists");
 
-      error.statusCode = 409; // Conflict
+      error.statusCode = 401; // Conflict
       throw error;
     }
     console.log("usernameExsist....", loginUser.password);
@@ -109,11 +101,10 @@ const loginUserService = async ({ username, password }) => {
       const error = new Error("Invalid Password");
       console.log("isPasswordMatch....", isPasswordMatch);
 
-      error.statusCode = 409; // Conflict
+      error.statusCode = 401; // Conflict
       throw error;
     }
-    // const token = "nemalllllll";
-
+    
     const token = JWT.sign({ Nic: loginUser.Nic }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
@@ -121,7 +112,7 @@ const loginUserService = async ({ username, password }) => {
 
     return { success: true, loginUser, token };
   } catch (error) {
-    if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
+    if (!error.statusCode) error.statusCode = 500; 
     throw error;
   }
 };
@@ -135,17 +126,16 @@ const regKeyValidation = async ({ regkey }) => {
       RegistrationKey.key_hash
     );
     if (!isRegKeyMatch) {
-      //working corectly
       const error = new Error("Invalid Registration Key");
       console.log("isPasswordMatch....", isRegKeyMatch);
 
-      error.statusCode = 409; // Conflict
+      error.statusCode = 401; // Conflict
       throw error;
     }
 
     return { success: true, isRegKeyMatch };
   } catch (error) {
-    if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
+    if (!error.statusCode) error.statusCode = 500; 
     throw error;
   }
 };

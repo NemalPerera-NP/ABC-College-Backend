@@ -42,10 +42,9 @@ const getallStudentController = async (req, res) => {
         data: allStudents,
       });
     } else {
-      // signUpUser.success is false, handle according to signUpUser.statusCode
       return res
-        .status(loginUser.statusCode || 400)
-        .json({ message: loginUser.message });
+        .status(allStudents.statusCode || 400)
+        .json({ message: allStudents.message });
     }
   } catch (error) {
     console.error("New Student Creation controller error:", error);

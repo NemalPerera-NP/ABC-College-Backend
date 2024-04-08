@@ -4,7 +4,6 @@ const createNewStudent = async (studentData) => {
   try {
     const nic_Exsits = await StudentModel.findByElement("nic", studentData.nic);
     if (nic_Exsits) {
-      //working corectly
       const error = new Error("Student has Already used This NIC");
       error.statusCode = 409; // Conflict
       throw error;
@@ -15,7 +14,6 @@ const createNewStudent = async (studentData) => {
       studentData.student_id
     );
     if (studentId_Exsits) {
-      //working corectly
       const error = new Error("Student has Already used This student Id");
       error.statusCode = 409; // Conflict
       throw error;
@@ -26,7 +24,6 @@ const createNewStudent = async (studentData) => {
       studentData.email
     );
     if (email_Exsits) {
-      //working corectly
       const error = new Error("Student has Already used This Email");
       error.statusCode = 409; // Conflict
       throw error;
@@ -36,16 +33,14 @@ const createNewStudent = async (studentData) => {
       studentData.contact_number
     );
     if (contactNumber_Exsits) {
-      //working corectly
       const error = new Error("Student has Already used This Contact Number");
       error.statusCode = 409; // Conflict
       throw error;
     }
 
-    const [result, _] = await StudentModel.addStudent(studentData); // Destructure to get the result
+    const [result, _] = await StudentModel.addStudent(studentData); 
     console.log("result Service....", result);
 
-    // Correctly assess operation success
     if (result && result.affectedRows > 0) {
       return {
         success: true,
@@ -59,7 +54,7 @@ const createNewStudent = async (studentData) => {
       };
     }
   } catch (error) {
-    if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
+    if (!error.statusCode) error.statusCode = 500; 
     throw error;
   }
 };
@@ -69,7 +64,7 @@ const getStudents = async () => {
     const students = await StudentModel.getAllStudents();
     return { success: true, students };
   } catch (error) {
-    if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
+    if (!error.statusCode) error.statusCode = 500; 
     throw error;
   }
 };
@@ -79,7 +74,7 @@ const getStudentById = async (id) => {
     const students = await StudentModel.findStudentByIndex(id);
     return { success: true, students };
   } catch (error) {
-    if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
+    if (!error.statusCode) error.statusCode = 500; 
     throw error;
   }
 };
@@ -91,7 +86,7 @@ const updateStudent = async (id, studentData) => {
     const students = await StudentModel.updateStudentData(id, studentData);
     return { success: true, students };
   } catch (error) {
-    if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
+    if (!error.statusCode) error.statusCode = 500; 
     throw error;
   }
 };
@@ -107,7 +102,7 @@ const deleteStudent = async (id) => {
     }
     return { success: true, message: "Student deleted successfully" };
   } catch (error) {
-    if (!error.statusCode) error.statusCode = 500; // Ensures there is a default error code
+    if (!error.statusCode) error.statusCode = 500; 
     throw error;
   }
 };

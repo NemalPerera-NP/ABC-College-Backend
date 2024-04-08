@@ -60,7 +60,6 @@ StudentModel.updateStudentData = async (id, studentData ) => {
 
     await db.query(sql, [...Object.values(studentData), id]);
 
-    // Directly use StudentModel.findStudentById without relying on `this`
     return StudentModel.findStudentByIndex(id);
   } catch (error) {
     throw error;
