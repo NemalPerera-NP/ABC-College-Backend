@@ -28,5 +28,5 @@ router.delete(
   authenticateToken,
   deleteStudentController
 );
-router.post("/update/reg-key", authenticateToken, regKeyupdateController);
+router.put("/update/reg-key", authenticateToken, regKeyupdateController);
 module.exports = router;
